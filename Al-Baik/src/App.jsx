@@ -10,13 +10,11 @@ import NotFoundPage from './pages/NotFoundPage';
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<OrderPage />} /> {/* Order/Cashier Page */}
-      <Route path="/kitchen" element={<KitchenPage />} /> {/* Kitchen Page */}
-      <Route path="/staff" element={<StaffPage />} /> {/* Staff Page */}
-      <Route path="/queue" element={<QueuePage />} />{' '}
-      {/* Waiting Queue Screen */}
-      <Route path="*" element={<NotFoundPage />} />{' '}
-      {/* Catch-all for undefined routes */}
+      <Route path="/" element={<OrderPage />} />
+      <Route path="/kitchen" element={<KitchenPage />} />
+      <Route path="/staff" element={<StaffPage />} />
+      <Route path="/queue" element={<QueuePage />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

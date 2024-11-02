@@ -1,13 +1,7 @@
 // src/pages/KitchenPage.jsx
 import React, { useState } from 'react';
-import { Layout, List, Card, Checkbox, Typography, Button } from 'antd';
-// import { CheckOutlined } from '@ant-design/icons';
-
-const { Header, Content, Footer } = Layout;
-const { Title } = Typography;
 
 function KitchenPage() {
-  // Sample orders data; in a real app, fetch this from your backend
   const [orders, setOrders] = useState([
     {
       orderId: 1,
@@ -20,10 +14,8 @@ function KitchenPage() {
       orderId: 2,
       items: [{ name: 'Fish Meal', prepared: false }],
     },
-    // ...more orders
   ]);
 
-  // Function to toggle the prepared status of an item
   const toggleItemPrepared = (orderId, itemName) => {
     setOrders((prevOrders) =>
       prevOrders.map((order) =>
@@ -41,71 +33,62 @@ function KitchenPage() {
     );
   };
 
-  // Function to check if all items in an order are prepared
   const isOrderPrepared = (order) => order.items.every((item) => item.prepared);
 
-  // Function to handle marking an order as ready
   const markOrderAsReady = (orderId) => {
-    // In a real app, update the order status in the backend
     console.log(`Order ${orderId} is ready.`);
-    // Remove the order from the list
     setOrders((prevOrders) =>
       prevOrders.filter((order) => order.orderId !== orderId)
     );
   };
 
   return (
-    <Layout>
-      <Header>
-        <Title level={2} style={{ color: 'white' }}>
-          Kitchen Orders
-        </Title>
-      </Header>
-      <Content style={{ padding: '20px' }}>
+    <div className="min-h-screen flex flex-col">
+      <header className="bg-yellow-600 text-white py-4">
+        <h1 className="text-3xl font-bold text-center">Kitchen Orders</h1>
+      </header>
+      <main className="flex-grow container mx-auto p-4">
         {orders.length === 0 ? (
-          <Title level={4}>No orders to prepare.</Title>
+          <h2 className="text-xl font-bold text-center">
+            No orders to prepare.
+          </h2>
         ) : (
-          <List
-            grid={{ gutter: 16, column: 2 }}
-            dataSource={orders}
-            renderItem={(order) => (
-              <List.Item>
-                <Card
-                  title={`Order #${order.orderId}`}
-                  extra={
-                    isOrderPrepared(order) && (
-                      <Button
-                        type="primary"
-                        onClick={() => markOrderAsReady(order.orderId)}
-                      >
-                        Mark as Ready
-                      </Button>
-                    )
-                  }
-                >
-                  <List
-                    dataSource={order.items}
-                    renderItem={(item) => (
-                      <List.Item>
-                        <Checkbox
-                          checked={item.prepared}
-                          onChange={() =>
-                            toggleItemPrepared(order.orderId, item.name)
-                          }
-                        >
-                          {item.name}
-                        </Checkbox>
-                      </List.Item>
-                    )}
-                  />
-                </Card>
-              </List.Item>
-            )}
-          />
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+            {orders.map((order) => (
+              <div key={order.orderId} className="border rounded p-4 shadow">
+                <h2 className="text-xl font-bold mb-2">
+                  Order #{order.orderId}
+                </h2>
+                <ul className="space-y-2 mb-4">
+                  {order.items.map((item) => (
+                    <li key={item.name} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={item.prepared}
+                        onChange={() =>
+                          toggleItemPrepared(order.orderId, item.name)
+                        }
+                        className="mr-2"
+                      />
+                      <span>{item.name}</span>
+                    </li>
+                  ))}
+                </ul>
+                {isOrderPrepared(order) && (
+                  <button
+                    className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+                    onClick={() => markOrderAsReady(order.orderId)}
+                  >
+                    Mark as Ready
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
         )}
-      </Content>
-      <Footer style={{ textAlign: 'center' }}>Al Baik ©2024</Footer>
-    </Layout>
+      </main>
+      <footer className="bg-gray-200 text-center py-4">Al Baik ©2024</footer>
+    </div>
   );
 }
 

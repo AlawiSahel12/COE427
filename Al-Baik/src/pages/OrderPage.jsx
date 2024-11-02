@@ -1,20 +1,5 @@
 // src/pages/OrderPage.jsx
 import React, { useState } from 'react';
-import {
-  Layout,
-  Menu,
-  Button,
-  Form,
-  InputNumber,
-  Select,
-  Divider,
-  List,
-  Typography,
-} from 'antd';
-
-const { Header, Content, Footer } = Layout;
-const { Option } = Select;
-const { Title } = Typography;
 
 const menuItems = [
   { name: 'Chicken Meal', price: 20 },
@@ -25,84 +10,105 @@ const menuItems = [
 ];
 
 function OrderPage() {
+  const [selectedItem, setSelectedItem] = useState('');
+  const [quantity, setQuantity] = useState(1);
   const [orderItems, setOrderItems] = useState([]);
 
-  const onFinish = (values) => {
-    const item = menuItems.find((menuItem) => menuItem.name === values.item);
-    const totalPrice = item.price * values.quantity;
+  const addItemToOrder = () => {
+    if (!selectedItem) return;
+
+    const item = menuItems.find((menuItem) => menuItem.name === selectedItem);
+    const totalPrice = item.price * quantity;
 
     const newOrderItem = {
-      ...values,
+      name: item.name,
       price: item.price,
+      quantity,
       totalPrice,
     };
 
     setOrderItems([...orderItems, newOrderItem]);
+    setSelectedItem('');
+    setQuantity(1);
   };
 
   const handleSubmitOrder = () => {
     // Here you would send the order to the backend server
-    // For now, we'll just reset the order items
     console.log('Order submitted:', orderItems);
     setOrderItems([]);
   };
 
   return (
-    <Layout>
-      <Header>
-        <Title level={2} style={{ color: 'white' }}>
-          Al Baik Order System
-        </Title>
-      </Header>
-      <Content style={{ padding: '20px' }}>
-        <Form layout="inline" onFinish={onFinish}>
-          <Form.Item
-            name="item"
-            rules={[{ required: true, message: 'Please select an item!' }]}
-          >
-            <Select placeholder="Select Item" style={{ width: 200 }}>
-              {menuItems.map((menuItem) => (
-                <Option key={menuItem.name} value={menuItem.name}>
-                  {menuItem.name} - SAR {menuItem.price}
-                </Option>
+    <div className="min-h-screen flex flex-col">
+      <header className="bg-red-600 text-white py-4">
+        <h1 className="text-3xl font-bold text-center">Al Baik Order System</h1>
+      </header>
+      <main className="flex-grow container mx-auto p-4">
+        <div className="max-w-md mx-auto">
+          <div className="mb-4">
+            <label className="block text-gray-700">Select Item</label>
+            <select
+              className="w-full border border-gray-300 p-2 rounded"
+              value={selectedItem}
+              onChange={(e) => setSelectedItem(e.target.value)}
+            >
+              <option value="" disabled>
+                -- Select an item --
+              </option>
+              {menuItems.map((item) => (
+                <option key={item.name} value={item.name}>
+                  {item.name} - SAR {item.price}
+                </option>
               ))}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="quantity"
-            rules={[{ required: true, message: 'Please input quantity!' }]}
+            </select>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Quantity</label>
+            <input
+              type="number"
+              min="1"
+              className="w-full border border-gray-300 p-2 rounded"
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+            />
+          </div>
+          <button
+            className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700"
+            onClick={addItemToOrder}
           >
-            <InputNumber min={1} placeholder="Quantity" />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Add to Order
-            </Button>
-          </Form.Item>
-        </Form>
-        <Divider />
-        <List
-          header={<div>Order Items</div>}
-          bordered
-          dataSource={orderItems}
-          renderItem={(item) => (
-            <List.Item>
-              {item.quantity} x {item.item} @ SAR {item.price} each - Total: SAR{' '}
-              {item.totalPrice}
-            </List.Item>
-          )}
-        />
-        <Button
-          type="primary"
-          onClick={handleSubmitOrder}
-          disabled={orderItems.length === 0}
-          style={{ marginTop: '20px' }}
-        >
-          Submit Order
-        </Button>
-      </Content>
-      <Footer style={{ textAlign: 'center' }}>Al Baik ©2024</Footer>
-    </Layout>
+            Add to Order
+          </button>
+          <div className="mt-6">
+            <h2 className="text-xl font-bold mb-2">Order Items</h2>
+            {orderItems.length === 0 ? (
+              <p>No items in the order.</p>
+            ) : (
+              <ul className="space-y-2">
+                {orderItems.map((item, index) => (
+                  <li
+                    key={index}
+                    className="flex justify-between border-b pb-2"
+                  >
+                    <span>
+                      {item.quantity} x {item.name}
+                    </span>
+                    <span>Total: SAR {item.totalPrice}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <button
+            className="w-full bg-green-600 text-white py-2 rounded mt-4 hover:bg-green-700"
+            onClick={handleSubmitOrder}
+            disabled={orderItems.length === 0}
+          >
+            Submit Order
+          </button>
+        </div>
+      </main>
+      <footer className="bg-gray-200 text-center py-4">Al Baik ©2024</footer>
+    </div>
   );
 }
 

@@ -1,72 +1,54 @@
 // src/pages/StaffPage.jsx
-import React, { useEffect, useState } from 'react';
-import { Layout, List, Card, Button, Typography, Modal } from 'antd';
-
-const { Header, Content, Footer } = Layout;
-const { Title } = Typography;
+import React, { useState } from 'react';
 
 function StaffPage() {
-  // Sample ready orders data; in a real app, fetch this from your backend
   const [readyOrders, setReadyOrders] = useState([
     { orderId: 1, items: ['Chicken Meal', 'Fries'] },
     { orderId: 2, items: ['Fish Meal'] },
-    // ...more orders
   ]);
 
-  // Function to handle marking an order as served
   const markOrderAsServed = (orderId) => {
-    // In a real app, update the order status in the backend
     console.log(`Order ${orderId} has been served.`);
-    // Remove the order from the list
     setReadyOrders((prevOrders) =>
       prevOrders.filter((order) => order.orderId !== orderId)
     );
-    // Optionally, display a confirmation modal or notification
-    Modal.success({
-      title: 'Order Served',
-      content: `Order #${orderId} has been marked as served.`,
-    });
   };
 
   return (
-    <Layout>
-      <Header>
-        <Title level={2} style={{ color: 'white' }}>
-          Staff Dashboard
-        </Title>
-      </Header>
-      <Content style={{ padding: '20px' }}>
+    <div className="min-h-screen flex flex-col">
+      <header className="bg-blue-600 text-white py-4">
+        <h1 className="text-3xl font-bold text-center">Staff Dashboard</h1>
+      </header>
+      <main className="flex-grow container mx-auto p-4">
         {readyOrders.length === 0 ? (
-          <Title level={4}>No orders ready to serve.</Title>
+          <h2 className="text-xl font-bold text-center">
+            No orders ready to serve.
+          </h2>
         ) : (
-          <List
-            grid={{ gutter: 16, column: 2 }}
-            dataSource={readyOrders}
-            renderItem={(order) => (
-              <List.Item>
-                <Card
-                  title={`Order #${order.orderId}`}
-                  actions={[
-                    <Button
-                      type="primary"
-                      onClick={() => markOrderAsServed(order.orderId)}
-                    >
-                      Mark as Served
-                    </Button>,
-                  ]}
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+            {readyOrders.map((order) => (
+              <div key={order.orderId} className="border rounded p-4 shadow">
+                <h2 className="text-xl font-bold mb-2">
+                  Order #{order.orderId}
+                </h2>
+                <ul className="list-disc list-inside mb-4">
+                  {order.items.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
+                <button
+                  className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+                  onClick={() => markOrderAsServed(order.orderId)}
                 >
-                  <List
-                    dataSource={order.items}
-                    renderItem={(item) => <List.Item>{item}</List.Item>}
-                  />
-                </Card>
-              </List.Item>
-            )}
-          />
+                  Mark as Served
+                </button>
+              </div>
+            ))}
+          </div>
         )}
-      </Content>
-      <Footer style={{ textAlign: 'center' }}>Al Baik ©2024</Footer>
-    </Layout>
+      </main>
+      <footer className="bg-gray-200 text-center py-4">Al Baik ©2024</footer>
+    </div>
   );
 }
 
