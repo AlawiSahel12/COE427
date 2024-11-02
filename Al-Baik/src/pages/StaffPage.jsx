@@ -15,7 +15,7 @@ function StaffPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-100">
       <header className="bg-blue-600 text-white py-4">
         <h1 className="text-3xl font-bold text-center">Staff Dashboard</h1>
       </header>
@@ -27,17 +27,22 @@ function StaffPage() {
         ) : (
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
             {readyOrders.map((order) => (
-              <div key={order.orderId} className="border rounded p-4 shadow">
-                <h2 className="text-xl font-bold mb-2">
+              <div
+                key={order.orderId}
+                className="border rounded-lg p-4 shadow bg-white"
+              >
+                <h2 className="text-2xl font-bold mb-4">
                   Order #{order.orderId}
                 </h2>
-                <ul className="list-disc list-inside mb-4">
+                <ul className="space-y-2 mb-4">
                   {order.items.map((item, index) => (
-                    <li key={index}>{item}</li>
+                    <li key={index} className="text-lg">
+                      {item}
+                    </li>
                   ))}
                 </ul>
                 <button
-                  className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+                  className="w-full bg-green-600 text-white py-3 rounded-lg text-xl font-bold"
                   onClick={() => markOrderAsServed(order.orderId)}
                 >
                   Mark as Served

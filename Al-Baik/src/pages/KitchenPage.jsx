@@ -43,7 +43,7 @@ function KitchenPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-100">
       <header className="bg-yellow-600 text-white py-4">
         <h1 className="text-3xl font-bold text-center">Kitchen Orders</h1>
       </header>
@@ -55,31 +55,38 @@ function KitchenPage() {
         ) : (
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
             {orders.map((order) => (
-              <div key={order.orderId} className="border rounded p-4 shadow">
-                <h2 className="text-xl font-bold mb-2">
+              <div
+                key={order.orderId}
+                className="border rounded-lg p-4 shadow bg-white"
+              >
+                <h2 className="text-2xl font-bold mb-4">
                   Order #{order.orderId}
                 </h2>
-                <ul className="space-y-2 mb-4">
+                <ul className="space-y-4 mb-4">
                   {order.items.map((item) => (
                     <li key={item.name} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={item.prepared}
-                        onChange={() =>
+                      <button
+                        className={`w-full text-left py-2 px-4 rounded-lg ${
+                          item.prepared
+                            ? 'bg-green-500 text-white'
+                            : 'bg-gray-200'
+                        }`}
+                        onClick={() =>
                           toggleItemPrepared(order.orderId, item.name)
                         }
-                        className="mr-2"
-                      />
-                      <span>{item.name}</span>
+                        style={{ minHeight: '60px' }}
+                      >
+                        {item.name}
+                      </button>
                     </li>
                   ))}
                 </ul>
                 {isOrderPrepared(order) && (
                   <button
-                    className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+                    className="w-full bg-blue-600 text-white py-3 rounded-lg text-xl font-bold"
                     onClick={() => markOrderAsReady(order.orderId)}
                   >
-                    Mark as Ready
+                    Mark Order as Ready
                   </button>
                 )}
               </div>

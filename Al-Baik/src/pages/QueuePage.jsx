@@ -31,41 +31,51 @@ function QueuePage() {
   const readyOrders = orders.filter((order) => order.status === 'Ready');
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-100">
       <header className="bg-green-600 text-white py-4">
         <h1 className="text-3xl font-bold text-center">Order Status</h1>
       </header>
       <main className="flex-grow container mx-auto p-4">
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+        <div className="grid gap-8 grid-cols-1 md:grid-cols-2">
           <div>
-            <h2 className="text-2xl font-bold mb-2 text-center">
+            <h2 className="text-2xl font-bold mb-4 text-center">
               Preparing Orders
             </h2>
-            <ul className="space-y-2">
-              {preparingOrders.map((order) => (
-                <li
-                  key={order.orderId}
-                  className="border rounded p-2 text-center bg-yellow-100"
-                >
-                  Order #{order.orderId}
-                </li>
-              ))}
-            </ul>
+            <div className="grid gap-4">
+              {preparingOrders.length === 0 ? (
+                <p className="text-center text-lg">
+                  No orders are being prepared.
+                </p>
+              ) : (
+                preparingOrders.map((order) => (
+                  <div
+                    key={order.orderId}
+                    className="bg-yellow-200 rounded-lg py-4 text-center text-2xl font-bold"
+                  >
+                    Order #{order.orderId}
+                  </div>
+                ))
+              )}
+            </div>
           </div>
           <div>
-            <h2 className="text-2xl font-bold mb-2 text-center">
+            <h2 className="text-2xl font-bold mb-4 text-center">
               Ready Orders
             </h2>
-            <ul className="space-y-2">
-              {readyOrders.map((order) => (
-                <li
-                  key={order.orderId}
-                  className="border rounded p-2 text-center bg-green-100"
-                >
-                  Order #{order.orderId}
-                </li>
-              ))}
-            </ul>
+            <div className="grid gap-4">
+              {readyOrders.length === 0 ? (
+                <p className="text-center text-lg">No orders are ready.</p>
+              ) : (
+                readyOrders.map((order) => (
+                  <div
+                    key={order.orderId}
+                    className="bg-green-200 rounded-lg py-4 text-center text-2xl font-bold"
+                  >
+                    Order #{order.orderId}
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
       </main>
