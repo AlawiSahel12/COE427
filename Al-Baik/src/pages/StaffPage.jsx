@@ -16,41 +16,28 @@ function StaffPage() {
       resetOrder(order);
       setResetMode(false);
     } else {
-      // Determine the next status
-      let nextStatus = "";
-      if (order.status === "Waiting") nextStatus = "Preparing";
-      else if (order.status === "Preparing") nextStatus = "Ready";
-      else if (order.status === "Ready") nextStatus = "Served";
-
-      if (nextStatus === "Served") {
+      // Transition from "Waiting" to "Served"
+      if (order.status === "Waiting") {
         markOrderAsServed(order.orderId);
-      } else {
-        updateOrderStatus(order.orderId, nextStatus);
       }
     }
   };
 
-  const updateOrderStatus = (orderId, newStatus) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        order.orderId === orderId ? { ...order, status: newStatus } : order,
-      ),
-    );
-  };
-
   const markOrderAsServed = (orderId) => {
     const servedOrder = orders.find((order) => order.orderId === orderId);
-    setServedOrders((prevServed) => {
-      const updatedServed = [servedOrder, ...prevServed];
-      // Keep only the last 10 orders
-      if (updatedServed.length > 10) {
-        updatedServed.pop(); // Remove the oldest order
-      }
-      return updatedServed;
-    });
-    setOrders((prevOrders) =>
-      prevOrders.filter((order) => order.orderId !== orderId),
-    );
+    if (servedOrder) {
+      setServedOrders((prevServed) => {
+        const updatedServed = [servedOrder, ...prevServed];
+        // Keep only the last 10 orders
+        if (updatedServed.length > 10) {
+          updatedServed.pop(); // Remove the oldest order
+        }
+        return updatedServed;
+      });
+      setOrders((prevOrders) =>
+        prevOrders.filter((order) => order.orderId !== orderId),
+      );
+    }
   };
 
   const resetOrder = (order) => {
@@ -60,12 +47,11 @@ function StaffPage() {
       setServedOrders((prevServed) =>
         prevServed.filter((o) => o.orderId !== order.orderId),
       );
-      // Add back to orders with status 'Ready'
-      setOrders((prevOrders) => [...prevOrders, { ...order, status: "Ready" }]);
-    } else {
-      // Order is in orders
-      // Reset status to 'Waiting'
-      updateOrderStatus(order.orderId, "Waiting");
+      // Add back to orders with status 'Waiting'
+      setOrders((prevOrders) => [
+        ...prevOrders,
+        { ...order, status: "Waiting" },
+      ]);
     }
   };
 
@@ -73,22 +59,16 @@ function StaffPage() {
     switch (status) {
       case "Waiting":
         return "border-gray-500 bg-gray-100";
-      case "Preparing":
-        return "border-yellow-500 bg-yellow-100";
-      case "Ready":
+      case "Served":
         return "border-green-500 bg-green-100";
       default:
         return "border-gray-500 bg-gray-100";
     }
   };
 
-  const getNextStatusText = (status) => {
+  const getStatusText = (status) => {
     switch (status) {
       case "Waiting":
-        return "Mark as Preparing";
-      case "Preparing":
-        return "Mark as Ready";
-      case "Ready":
         return "Mark as Served";
       default:
         return "";
@@ -131,9 +111,7 @@ function StaffPage() {
                   className={`text-lg font-semibold mb-2 ${
                     order.status === "Waiting"
                       ? "text-gray-700"
-                      : order.status === "Preparing"
-                        ? "text-yellow-700"
-                        : "text-green-700"
+                      : "text-green-700"
                   }`}
                 >
                   Status: {order.status}
@@ -151,7 +129,7 @@ function StaffPage() {
                   } text-white py-2 rounded-lg text-xl font-bold`}
                   onClick={() => handleOrderClick(order)}
                 >
-                  {resetMode ? "Reset Order" : getNextStatusText(order.status)}
+                  {resetMode ? "Reset Order" : getStatusText(order.status)}
                 </button>
               </div>
             ))}
