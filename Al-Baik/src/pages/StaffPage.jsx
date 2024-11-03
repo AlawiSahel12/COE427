@@ -41,12 +41,22 @@ function StaffPage() {
                     </li>
                   ))}
                 </ul>
+                <div className='flex flex-col gap-2'>
+                <button
+                  className="w-full bg-yellow-300 text-white py-3 rounded-lg text-xl font-bold"
+                  // onClick={() => markOrderAsServed(order.orderId)}
+                >
+                  Mark as Ready
+                </button>
                 <button
                   className="w-full bg-green-600 text-white py-3 rounded-lg text-xl font-bold"
                   onClick={() => markOrderAsServed(order.orderId)}
                 >
                   Mark as Served
                 </button>
+
+                </div>
+
               </div>
             ))}
           </div>
