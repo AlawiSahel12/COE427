@@ -1,10 +1,10 @@
 // src/pages/SandwichesPage.jsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function SandwichesPage() {
   const [sandwiches, setSandwiches] = useState([
-    { name: 'Spicy Chicken Sandwich', spicy: true, required: 5, prepared: 3 },
-    { name: 'Normal Chicken Sandwich', spicy: false, required: 8, prepared: 5 },
+    { name: "Spicy Chicken Sandwich", spicy: true, required: 5, prepared: 3 },
+    { name: "Normal Chicken Sandwich", spicy: false, required: 8, prepared: 5 },
   ]);
 
   const toggleItemPrepared = (itemName) => {
@@ -12,8 +12,8 @@ function SandwichesPage() {
       prevSandwiches.map((sandwich) =>
         sandwich.name === itemName
           ? { ...sandwich, prepared: sandwich.prepared + 1 }
-          : sandwich
-      )
+          : sandwich,
+      ),
     );
   };
 
@@ -38,9 +38,15 @@ function SandwichesPage() {
             {sandwiches.map((sandwich) => (
               <tr key={sandwich.name}>
                 <td className="border border-gray-300 p-2">{sandwich.name}</td>
-                <td className="border border-gray-300 p-2">{sandwich.spicy ? 'Spicy' : 'Normal'}</td>
-                <td className="border border-gray-300 p-2">{sandwich.required}</td>
-                <td className="border border-gray-300 p-2">{sandwich.prepared}</td>
+                <td className="border border-gray-300 p-2">
+                  {sandwich.spicy ? "Spicy" : "Normal"}
+                </td>
+                <td className="border border-gray-300 p-2">
+                  {sandwich.required}
+                </td>
+                <td className="border border-gray-300 p-2">
+                  {sandwich.prepared}
+                </td>
                 <td className="border border-gray-300 p-2">
                   <button
                     className="bg-green-500 text-white py-1 px-2 rounded"

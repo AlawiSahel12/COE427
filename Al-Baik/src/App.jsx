@@ -1,12 +1,6 @@
 // src/App.jsx
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import OrderPage from './pages/OrderPage';
-import StaffPage from './pages/StaffPage';
-import QueuePage from './pages/QueuePage';
-import NotFoundPage from './pages/NotFoundPage';
-import MealsPage from './pages/KitchenPage-meal';
-import SandwichesPage from './pages/KitchenPage-Sandwich';
+import MealsPage from "./pages/KitchenPage-meal";
+import SandwichesPage from "./pages/KitchenPage-Sandwich";
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import OrderPage from "./pages/OrderPage";

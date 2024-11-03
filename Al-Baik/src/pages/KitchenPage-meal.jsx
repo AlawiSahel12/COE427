@@ -1,10 +1,10 @@
 // src/pages/MealsPage.jsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function MealsPage() {
   const [meals, setMeals] = useState([
-    { name: 'Spicy Fish', spicy: true, required: 4, prepared: 2 },
-    { name: 'Normal Fish', spicy: false, required: 6, prepared: 3 },
+    { name: "Spicy Fish", spicy: true, required: 4, prepared: 2 },
+    { name: "Normal Fish", spicy: false, required: 6, prepared: 3 },
   ]);
 
   const toggleItemPrepared = (itemName) => {
@@ -12,8 +12,8 @@ function MealsPage() {
       prevMeals.map((meal) =>
         meal.name === itemName
           ? { ...meal, prepared: meal.prepared + 1 }
-          : meal
-      )
+          : meal,
+      ),
     );
   };
 
@@ -38,7 +38,9 @@ function MealsPage() {
             {meals.map((meal) => (
               <tr key={meal.name}>
                 <td className="border border-gray-300 p-2">{meal.name}</td>
-                <td className="border border-gray-300 p-2">{meal.spicy ? 'Spicy' : 'Normal'}</td>
+                <td className="border border-gray-300 p-2">
+                  {meal.spicy ? "Spicy" : "Normal"}
+                </td>
                 <td className="border border-gray-300 p-2">{meal.required}</td>
                 <td className="border border-gray-300 p-2">{meal.prepared}</td>
                 <td className="border border-gray-300 p-2">
