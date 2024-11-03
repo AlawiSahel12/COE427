@@ -6,6 +6,7 @@ import KitchenPage from './pages/KitchenPage';
 import StaffPage from './pages/StaffPage';
 import QueuePage from './pages/QueuePage';
 import NotFoundPage from './pages/NotFoundPage';
+import ReceiptPage from './pages/ReceiptPage';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Route path="/kitchen" element={<KitchenPage />} />
       <Route path="/staff" element={<StaffPage />} />
       <Route path="/queue" element={<QueuePage />} />
+      <Route path="/receipt" element={<ReceiptPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
