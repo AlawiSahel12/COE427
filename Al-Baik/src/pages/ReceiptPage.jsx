@@ -1,6 +1,6 @@
 // src/pages/ReceiptPage.jsx
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function ReceiptPage() {
   const location = useLocation();
@@ -10,7 +10,7 @@ function ReceiptPage() {
 
   const totalAmount = items
     ? items.reduce((total, item) => total + item.totalPrice, 0).toFixed(2)
-    : '0.00';
+    : "0.00";
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-100">
@@ -28,7 +28,7 @@ function ReceiptPage() {
           </div>
 
           <h2 className="text-2xl font-bold text-center mb-4 mt-8">
-            Order Number:{' '}
+            Order Number:{" "}
             <span className="text-red-600 text-4xl">{orderNumber}</span>
           </h2>
 
@@ -54,7 +54,7 @@ function ReceiptPage() {
 
         <button
           className="mt-8 bg-green-600 text-white py-3 px-6 rounded-lg text-2xl font-bold"
-          onClick={() => navigate('/')}
+          onClick={() => navigate("/")}
         >
           Done
         </button>

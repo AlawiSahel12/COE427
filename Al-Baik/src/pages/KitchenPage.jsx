@@ -1,18 +1,18 @@
 // src/pages/KitchenPage.jsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function KitchenPage() {
   const [orders, setOrders] = useState([
     {
       orderId: 1,
       items: [
-        { name: 'Chicken Meal', prepared: false },
-        { name: 'Fries', prepared: false },
+        { name: "Chicken Meal", prepared: false },
+        { name: "Fries", prepared: false },
       ],
     },
     {
       orderId: 2,
-      items: [{ name: 'Fish Meal', prepared: false }],
+      items: [{ name: "Fish Meal", prepared: false }],
     },
   ]);
 
@@ -25,11 +25,11 @@ function KitchenPage() {
               items: order.items.map((item) =>
                 item.name === itemName
                   ? { ...item, prepared: !item.prepared }
-                  : item
+                  : item,
               ),
             }
-          : order
-      )
+          : order,
+      ),
     );
   };
 
@@ -38,7 +38,7 @@ function KitchenPage() {
   const markOrderAsReady = (orderId) => {
     console.log(`Order ${orderId} is ready.`);
     setOrders((prevOrders) =>
-      prevOrders.filter((order) => order.orderId !== orderId)
+      prevOrders.filter((order) => order.orderId !== orderId),
     );
   };
 
@@ -68,13 +68,13 @@ function KitchenPage() {
                       <button
                         className={`w-full text-left py-2 px-4 rounded-lg ${
                           item.prepared
-                            ? 'bg-green-500 text-white'
-                            : 'bg-gray-200'
+                            ? "bg-green-500 text-white"
+                            : "bg-gray-200"
                         }`}
                         onClick={() =>
                           toggleItemPrepared(order.orderId, item.name)
                         }
-                        style={{ minHeight: '60px' }}
+                        style={{ minHeight: "60px" }}
                       >
                         {item.name}
                       </button>

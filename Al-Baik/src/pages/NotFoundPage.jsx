@@ -1,6 +1,6 @@
 // src/pages/NotFoundPage.jsx
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function NotFoundPage() {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ function NotFoundPage() {
       <p className="text-3xl mb-6">Oops! Page not found.</p>
       <button
         className="bg-blue-600 text-white px-8 py-4 rounded-lg text-2xl font-bold"
-        onClick={() => navigate('/')}
+        onClick={() => navigate("/")}
       >
         Back to Home
       </button>

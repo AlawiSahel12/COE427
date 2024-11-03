@@ -1,11 +1,11 @@
 // src/pages/QueuePage.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 function QueuePage() {
   const [orders, setOrders] = useState([
-    { orderId: 101, status: 'Waiting' },
-    { orderId: 102, status: 'Preparing' },
-    { orderId: 103, status: 'Ready' },
+    { orderId: 101, status: "Waiting" },
+    { orderId: 102, status: "Preparing" },
+    { orderId: 103, status: "Ready" },
     // ...more orders
   ]);
 
@@ -14,25 +14,25 @@ function QueuePage() {
     const interval = setInterval(() => {
       setOrders((prevOrders) =>
         prevOrders.map((order) => {
-          if (order.status === 'Waiting') {
-            return { ...order, status: 'Preparing' };
-          } else if (order.status === 'Preparing') {
-            return { ...order, status: 'Ready' };
+          if (order.status === "Waiting") {
+            return { ...order, status: "Preparing" };
+          } else if (order.status === "Preparing") {
+            return { ...order, status: "Ready" };
           } else {
             return order;
           }
-        })
+        }),
       );
     }, 10000); // Update every 10 seconds
 
     return () => clearInterval(interval);
   }, []);
 
-  const waitingOrders = orders.filter((order) => order.status === 'Waiting');
+  const waitingOrders = orders.filter((order) => order.status === "Waiting");
   const preparingOrders = orders.filter(
-    (order) => order.status === 'Preparing'
+    (order) => order.status === "Preparing",
   );
-  const readyOrders = orders.filter((order) => order.status === 'Ready');
+  const readyOrders = orders.filter((order) => order.status === "Ready");
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">

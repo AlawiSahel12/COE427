@@ -1,14 +1,14 @@
 // src/pages/OrderPage.jsx
-import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import OrderNumberContext from '../context/OrderNumberContext';
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import OrderNumberContext from "../context/OrderNumberContext";
 
 const menuItems = [
-  { name: 'Chicken Meal', price: 20 },
-  { name: 'Fish Meal', price: 18 },
-  { name: 'Shrimp Meal', price: 22 },
-  { name: 'Fries', price: 5 },
-  { name: 'Drink', price: 3 },
+  { name: "Chicken Meal", price: 20 },
+  { name: "Fish Meal", price: 18 },
+  { name: "Shrimp Meal", price: 22 },
+  { name: "Fries", price: 5 },
+  { name: "Drink", price: 3 },
 ];
 
 function OrderPage() {
@@ -21,7 +21,7 @@ function OrderPage() {
 
   const addItemToOrder = () => {
     const existingItemIndex = selectedItems.findIndex(
-      (item) => item.name === currentItem.name
+      (item) => item.name === currentItem.name,
     );
 
     if (existingItemIndex !== -1) {
@@ -56,10 +56,10 @@ function OrderPage() {
     };
 
     // Simulate sending order to backend
-    console.log('Order submitted:', orderData);
+    console.log("Order submitted:", orderData);
 
     // Navigate to ReceiptPage, passing orderData
-    navigate('/receipt', { state: orderData });
+    navigate("/receipt", { state: orderData });
 
     // Reset order state
     setSelectedItems([]);
@@ -83,11 +83,11 @@ function OrderPage() {
                   key={item.name}
                   className={`border rounded-lg p-4 text-center ${
                     currentItem.name === item.name
-                      ? 'bg-red-500 text-white'
-                      : 'bg-gray-200'
+                      ? "bg-red-500 text-white"
+                      : "bg-gray-200"
                   }`}
                   onClick={() => setCurrentItem(item)}
-                  style={{ minHeight: '80px' }}
+                  style={{ minHeight: "80px" }}
                 >
                   <span className="block text-lg font-semibold">
                     {item.name}
@@ -135,7 +135,7 @@ function OrderPage() {
                 <li className="flex justify-between items-center pt-2 border-t">
                   <span className="text-xl font-bold">Total</span>
                   <span className="text-xl font-bold">
-                    SAR{' '}
+                    SAR{" "}
                     {selectedItems
                       .reduce((total, item) => total + item.totalPrice, 0)
                       .toFixed(2)}
@@ -173,7 +173,7 @@ function OrderPage() {
           </button>
           <button
             className={`w-full max-w-md bg-green-600 text-white py-4 rounded-lg text-2xl font-bold ${
-              selectedItems.length === 0 ? 'opacity-50 cursor-not-allowed' : ''
+              selectedItems.length === 0 ? "opacity-50 cursor-not-allowed" : ""
             }`}
             onClick={handleSubmitOrder}
             disabled={selectedItems.length === 0}
@@ -195,8 +195,8 @@ function OrderPage() {
               quantity: item.quantity + 1,
               totalPrice: (item.quantity + 1) * item.price,
             }
-          : item
-      )
+          : item,
+      ),
     );
   }
 
@@ -210,9 +210,9 @@ function OrderPage() {
                 quantity: item.quantity - 1,
                 totalPrice: (item.quantity - 1) * item.price,
               }
-            : item
+            : item,
         )
-        .filter((item) => item.quantity > 0)
+        .filter((item) => item.quantity > 0),
     );
   }
 }

@@ -1,10 +1,10 @@
 // src/pages/StaffPage.jsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function StaffPage() {
   const [orders, setOrders] = useState([
-    { orderId: 101, items: ['Chicken Meal', 'Fries'], status: 'Waiting' },
-    { orderId: 102, items: ['Fish Meal'], status: 'Waiting' },
+    { orderId: 101, items: ["Chicken Meal", "Fries"], status: "Waiting" },
+    { orderId: 102, items: ["Fish Meal"], status: "Waiting" },
     // ...more orders
   ]);
 
@@ -17,12 +17,12 @@ function StaffPage() {
       setResetMode(false);
     } else {
       // Determine the next status
-      let nextStatus = '';
-      if (order.status === 'Waiting') nextStatus = 'Preparing';
-      else if (order.status === 'Preparing') nextStatus = 'Ready';
-      else if (order.status === 'Ready') nextStatus = 'Served';
+      let nextStatus = "";
+      if (order.status === "Waiting") nextStatus = "Preparing";
+      else if (order.status === "Preparing") nextStatus = "Ready";
+      else if (order.status === "Ready") nextStatus = "Served";
 
-      if (nextStatus === 'Served') {
+      if (nextStatus === "Served") {
         markOrderAsServed(order.orderId);
       } else {
         updateOrderStatus(order.orderId, nextStatus);
@@ -33,8 +33,8 @@ function StaffPage() {
   const updateOrderStatus = (orderId, newStatus) => {
     setOrders((prevOrders) =>
       prevOrders.map((order) =>
-        order.orderId === orderId ? { ...order, status: newStatus } : order
-      )
+        order.orderId === orderId ? { ...order, status: newStatus } : order,
+      ),
     );
   };
 
@@ -49,7 +49,7 @@ function StaffPage() {
       return updatedServed;
     });
     setOrders((prevOrders) =>
-      prevOrders.filter((order) => order.orderId !== orderId)
+      prevOrders.filter((order) => order.orderId !== orderId),
     );
   };
 
@@ -58,40 +58,40 @@ function StaffPage() {
       // Order is in servedOrders
       // Remove from servedOrders
       setServedOrders((prevServed) =>
-        prevServed.filter((o) => o.orderId !== order.orderId)
+        prevServed.filter((o) => o.orderId !== order.orderId),
       );
       // Add back to orders with status 'Ready'
-      setOrders((prevOrders) => [...prevOrders, { ...order, status: 'Ready' }]);
+      setOrders((prevOrders) => [...prevOrders, { ...order, status: "Ready" }]);
     } else {
       // Order is in orders
       // Reset status to 'Waiting'
-      updateOrderStatus(order.orderId, 'Waiting');
+      updateOrderStatus(order.orderId, "Waiting");
     }
   };
 
   const getStatusStyles = (status) => {
     switch (status) {
-      case 'Waiting':
-        return 'border-gray-500 bg-gray-100';
-      case 'Preparing':
-        return 'border-yellow-500 bg-yellow-100';
-      case 'Ready':
-        return 'border-green-500 bg-green-100';
+      case "Waiting":
+        return "border-gray-500 bg-gray-100";
+      case "Preparing":
+        return "border-yellow-500 bg-yellow-100";
+      case "Ready":
+        return "border-green-500 bg-green-100";
       default:
-        return 'border-gray-500 bg-gray-100';
+        return "border-gray-500 bg-gray-100";
     }
   };
 
   const getNextStatusText = (status) => {
     switch (status) {
-      case 'Waiting':
-        return 'Mark as Preparing';
-      case 'Preparing':
-        return 'Mark as Ready';
-      case 'Ready':
-        return 'Mark as Served';
+      case "Waiting":
+        return "Mark as Preparing";
+      case "Preparing":
+        return "Mark as Ready";
+      case "Ready":
+        return "Mark as Served";
       default:
-        return '';
+        return "";
     }
   };
 
@@ -103,11 +103,11 @@ function StaffPage() {
         </h1>
         <button
           className={`text-white font-bold py-2 px-4 rounded ${
-            resetMode ? 'bg-red-700' : 'bg-red-500'
+            resetMode ? "bg-red-700" : "bg-red-500"
           }`}
           onClick={() => setResetMode(!resetMode)}
         >
-          {resetMode ? 'Cancel Reset' : 'Reset Order'}
+          {resetMode ? "Cancel Reset" : "Reset Order"}
         </button>
       </header>
       <main className="flex-grow container mx-auto p-4 overflow-y-auto">
@@ -121,7 +121,7 @@ function StaffPage() {
               <div
                 key={order.orderId}
                 className={`border-4 rounded-lg p-4 shadow ${
-                  resetMode ? 'border-red-500' : getStatusStyles(order.status)
+                  resetMode ? "border-red-500" : getStatusStyles(order.status)
                 }`}
               >
                 <h2 className="text-2xl font-bold mb-2">
@@ -129,11 +129,11 @@ function StaffPage() {
                 </h2>
                 <p
                   className={`text-lg font-semibold mb-2 ${
-                    order.status === 'Waiting'
-                      ? 'text-gray-700'
-                      : order.status === 'Preparing'
-                        ? 'text-yellow-700'
-                        : 'text-green-700'
+                    order.status === "Waiting"
+                      ? "text-gray-700"
+                      : order.status === "Preparing"
+                        ? "text-yellow-700"
+                        : "text-green-700"
                   }`}
                 >
                   Status: {order.status}
@@ -147,11 +147,11 @@ function StaffPage() {
                 </ul>
                 <button
                   className={`w-full ${
-                    resetMode ? 'bg-red-600' : 'bg-blue-600'
+                    resetMode ? "bg-red-600" : "bg-blue-600"
                   } text-white py-2 rounded-lg text-xl font-bold`}
                   onClick={() => handleOrderClick(order)}
                 >
-                  {resetMode ? 'Reset Order' : getNextStatusText(order.status)}
+                  {resetMode ? "Reset Order" : getNextStatusText(order.status)}
                 </button>
               </div>
             ))}
@@ -167,7 +167,7 @@ function StaffPage() {
                 <div
                   key={order.orderId}
                   className={`border-4 rounded-lg p-4 shadow ${
-                    resetMode ? 'border-red-500' : 'border-gray-500 bg-gray-200'
+                    resetMode ? "border-red-500" : "border-gray-500 bg-gray-200"
                   }`}
                 >
                   <h2 className="text-2xl font-bold mb-2">
