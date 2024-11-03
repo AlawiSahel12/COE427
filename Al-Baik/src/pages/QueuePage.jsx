@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 function QueuePage() {
   const [orders, setOrders] = useState([
     { orderId: 101, status: "Waiting" },
-    { orderId: 102, status: "Preparing" },
+    { orderId: 102, status: "Waiting" },
     { orderId: 103, status: "Ready" },
     // ...more orders
   ]);
@@ -15,8 +15,6 @@ function QueuePage() {
       setOrders((prevOrders) =>
         prevOrders.map((order) => {
           if (order.status === "Waiting") {
-            return { ...order, status: "Preparing" };
-          } else if (order.status === "Preparing") {
             return { ...order, status: "Ready" };
           } else {
             return order;
@@ -29,9 +27,6 @@ function QueuePage() {
   }, []);
 
   const waitingOrders = orders.filter((order) => order.status === "Waiting");
-  const preparingOrders = orders.filter(
-    (order) => order.status === "Preparing",
-  );
   const readyOrders = orders.filter((order) => order.status === "Ready");
 
   return (
@@ -40,7 +35,7 @@ function QueuePage() {
         <h1 className="text-3xl font-bold text-center">Order Status</h1>
       </header>
       <main className="flex-grow container mx-auto p-4">
-        <div className="grid gap-8 grid-cols-1 md:grid-cols-3">
+        <div className="grid gap-8 grid-cols-1 md:grid-cols-2">
           {/* Waiting Orders */}
           <div>
             <h2 className="text-2xl font-bold mb-4 text-center">
@@ -54,29 +49,6 @@ function QueuePage() {
                   <div
                     key={order.orderId}
                     className="bg-gray-200 rounded-lg py-4 text-center text-2xl font-bold"
-                  >
-                    Order #{order.orderId}
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-          {/* Preparing Orders */}
-          <div>
-            <h2 className="text-2xl font-bold mb-4 text-center">
-              Preparing Orders
-            </h2>
-            <div className="grid gap-4">
-              {preparingOrders.length === 0 ? (
-                <p className="text-center text-lg">
-                  No orders are being prepared.
-                </p>
-              ) : (
-                preparingOrders.map((order) => (
-                  <div
-                    key={order.orderId}
-                    className="bg-yellow-200 rounded-lg py-4 text-center text-2xl font-bold"
                   >
                     Order #{order.orderId}
                   </div>
