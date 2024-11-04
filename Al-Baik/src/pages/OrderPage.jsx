@@ -9,6 +9,22 @@ const menuItems = [
   { name: "Shrimp Meal", price: 22 },
   { name: "Fries", price: 5 },
   { name: "Drink", price: 3 },
+  // Sandwiches section
+  {
+    name: "Chicken Sandwich",
+    price: 12,
+    description: "Crispy chicken sandwich with lettuce and sauce",
+  },
+  {
+    name: "Fish Sandwich",
+    price: 10,
+    description: "Fresh fish sandwich with tartar sauce",
+  },
+  {
+    name: "Chicken Burger",
+    price: 15,
+    description: "Juicy chicken burger with cheese and sauce",
+  },
 ];
 
 function OrderPage() {

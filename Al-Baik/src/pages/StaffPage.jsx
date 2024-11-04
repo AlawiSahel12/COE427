@@ -123,22 +123,14 @@ function StaffPage() {
                     </li>
                   ))}
                 </ul>
-                <div className="flex flex-col gap-2">
-                  <button
-                    className="w-full bg-yellow-300 text-white py-3 rounded-lg text-xl font-bold"
-                    // onClick={() => markOrderAsServed(order.orderId)}
-                  >
-                    Mark as Ready
-                  </button>
-                  <button
-                    className={`w-full ${
-                      resetMode ? "bg-red-600" : "bg-blue-600"
-                    } text-white py-2 rounded-lg text-xl font-bold`}
-                    onClick={() => handleOrderClick(order)}
-                  >
-                    {resetMode ? "Reset Order" : getStatusText(order.status)}
-                  </button>
-                </div>
+                <button
+                  className={`w-full ${
+                    resetMode ? "bg-red-600" : "bg-blue-600"
+                  } text-white py-2 rounded-lg text-xl font-bold`}
+                  onClick={() => handleOrderClick(order)}
+                >
+                  {resetMode ? "Reset Order" : getStatusText(order.status)}
+                </button>
               </div>
             ))}
           </div>
