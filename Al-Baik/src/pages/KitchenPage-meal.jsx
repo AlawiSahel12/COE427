@@ -3,8 +3,12 @@ import React, { useState } from "react";
 
 function MealsPage() {
   const [meals, setMeals] = useState([
-    { name: "Spicy Fish", spicy: true, required: 4, prepared: 2 },
-    { name: "Normal Fish", spicy: false, required: 6, prepared: 3 },
+    { name: "Chicken Meal", spicy: true, required: 0, prepared: 0 },
+    { name: "Chicken Meal", spicy: false, required: 0, prepared: 0 },
+    { name: "Fish Meal", spicy: true, required: 0, prepared: 0 },
+    { name: "Fish Meal", spicy: false, required: 0, prepared: 0 },
+    { name: "Fries", spicy: false, required: 0, prepared: 0 },
+    { name: "Shrimp Meal", spicy: false, required: 0, prepared: 0 },
   ]);
 
   const toggleItemPrepared = (itemName) => {

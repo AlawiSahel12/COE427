@@ -1,43 +1,79 @@
 // src/pages/OrderPage.jsx
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import OrderNumberContext from "../context/OrderNumberContext";
+import { Actions } from "../enum/orderStatus";
+
+
+
+
 
 const menuItems = [
+
+  // Meals
   { name: "Chicken Meal", price: 20 },
+  { name: "Spicy Chicken Meal", price: 22 },
   { name: "Fish Meal", price: 18 },
-  { name: "Shrimp Meal", price: 22 },
+  { name: "Spicy Fish Meal", price: 20 },
   { name: "Fries", price: 5 },
   { name: "Drink", price: 3 },
+
   // Sandwiches section
-  {
-    name: "Chicken Sandwich",
-    price: 12,
-    description: "Crispy chicken sandwich with lettuce and sauce",
-  },
-  {
-    name: "Fish Sandwich",
-    price: 10,
-    description: "Fresh fish sandwich with tartar sauce",
-  },
-  {
-    name: "Chicken Burger",
-    price: 15,
-    description: "Juicy chicken burger with cheese and sauce",
-  },
+
+  { name: "Chicken Sandwich", price: 12 },
+  { name: "Spicy Chicken Sandwich", price: 14 },
+  { name: "Fish Sandwich", price: 10 },
+  { name: "Spicy Fish Sandwich", price: 12 },
+  { name: "Chicken Burger", price: 15 }
 ];
+
 
 function OrderPage() {
   const [selectedItems, setSelectedItems] = useState([]);
   const [currentItem, setCurrentItem] = useState(menuItems[0]);
   const [quantity, setQuantity] = useState(1);
+  const [ws, setWs] = useState(null); // WebSocket state
 
   const navigate = useNavigate();
-  const { getNextOrderNumber, orderNumber } = useContext(OrderNumberContext);
+  // const { getNextOrderNumber, orderNumber } = useContext(OrderNumberContext);
+
+  // Establish WebSocket connection
+  useEffect(() => {
+    const socket = new WebSocket("ws://localhost:3000"); // Assuming your WebSocket server is running on localhost:3000
+
+    socket.onopen = () => {
+      console.log("Connected to WebSocket server");
+    };
+
+
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+
+      // Handle incoming messages from the WebSocket server
+      if (message.action === Actions.ORDER_CREATION) {
+        // console.log("Updated Order List:", message.data);
+        navigate("/receipt", { state: message.data });
+
+
+
+      } 
+    };
+
+    socket.onclose = () => {
+      console.log("Disconnected from WebSocket server");
+    };
+
+    setWs(socket); // Save the WebSocket object
+
+    return () => {
+      // Cleanup WebSocket connection when component unmounts
+      socket.close();
+    };
+  }, []);
 
   const addItemToOrder = () => {
     const existingItemIndex = selectedItems.findIndex(
-      (item) => item.name === currentItem.name,
+      (item) => item.name === currentItem.name
     );
 
     if (existingItemIndex !== -1) {
@@ -63,19 +99,27 @@ function OrderPage() {
 
   const handleSubmitOrder = () => {
     // Get the next order number
-    getNextOrderNumber();
+    // getNextOrderNumber();
 
     // Prepare order data
     const orderData = {
-      orderNumber: orderNumber + 1 > 999 ? 1 : orderNumber + 1,
+      // orderNumber: orderNumber + 1 > 999 ? 1 : orderNumber + 1, // we might change it. Numbering should be in the backend
       items: selectedItems,
     };
 
-    // Simulate sending order to backend
-    console.log("Order submitted:", orderData);
+    // Send the order data to the WebSocket server
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      const message = {
+        action: Actions.NEW_ORDER,
+        data: orderData,
+      };
+
+      // Send the message to the server
+      ws.send(JSON.stringify(message));
+      console.log("Order submitted:", message);
+    }
 
     // Navigate to ReceiptPage, passing orderData
-    navigate("/receipt", { state: orderData });
 
     // Reset order state
     setSelectedItems([]);
@@ -105,9 +149,7 @@ function OrderPage() {
                   onClick={() => setCurrentItem(item)}
                   style={{ minHeight: "80px" }}
                 >
-                  <span className="block text-lg font-semibold">
-                    {item.name}
-                  </span>
+                  <span className="block text-lg font-semibold">{item.name}</span>
                   <span className="block text-md">SAR {item.price}</span>
                 </button>
               ))}
@@ -211,8 +253,8 @@ function OrderPage() {
               quantity: item.quantity + 1,
               totalPrice: (item.quantity + 1) * item.price,
             }
-          : item,
-      ),
+          : item
+      )
     );
   }
 
@@ -226,9 +268,9 @@ function OrderPage() {
                 quantity: item.quantity - 1,
                 totalPrice: (item.quantity - 1) * item.price,
               }
-            : item,
+            : item
         )
-        .filter((item) => item.quantity > 0),
+        .filter((item) => item.quantity > 0)
     );
   }
 }
