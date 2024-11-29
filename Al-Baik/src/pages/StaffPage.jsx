@@ -1,15 +1,50 @@
 // src/pages/StaffPage.jsx
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
+import { Actions } from "../enum/orderStatus";
 
 function StaffPage() {
   const [orders, setOrders] = useState([
-    { orderId: 101, items: ["Chicken Meal", "Fries"], status: "Waiting" },
-    { orderId: 102, items: ["Fish Meal"], status: "Waiting" },
+    // { orderId: 101, items: ["Chicken Meal", "Fries"], status: "Waiting" },
+    // { orderId: 102, items: ["Fish Meal"], status: "Waiting" },
     // ...more orders
   ]);
 
   const [servedOrders, setServedOrders] = useState([]);
   const [resetMode, setResetMode] = useState(false);
+
+  const [ws, setWs] = useState(null); // WebSocket state
+
+
+  // Simulate real-time updates (for demonstration purposes)
+  useEffect(() => {
+    const socket = new WebSocket("ws://localhost:3000");
+
+    socket.onopen = () => {
+      console.log("Connected to WebSocket server");
+    };
+
+
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+
+      if (message.action === Actions.ORDER_LIST_UPDATE) {
+        setOrders(message.data)
+
+      } 
+    };
+
+    socket.onclose = () => {
+      console.log("Disconnected from WebSocket server");
+    };
+
+    setWs(socket); // Save the WebSocket object
+
+    return () => {
+      // Cleanup WebSocket connection when component unmounts
+      socket.close();
+    };
+  }, [])
+
 
   const handleOrderClick = (order) => {
     if (resetMode) {
@@ -18,13 +53,23 @@ function StaffPage() {
     } else {
       // Transition from "Waiting" to "Served"
       if (order.status === "Waiting") {
-        markOrderAsServed(order.orderId);
+        // markOrderAsServed(order.orderNumber);
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          const message = {
+            action: Actions.UPDATE_ORDER_STATE,
+            data: order.orderNumber,
+          };
+    
+          // Send the message to the server
+          ws.send(JSON.stringify(message));
+          console.log("Order submitted:", message);
+        }
       }
     }
   };
 
   const markOrderAsServed = (orderId) => {
-    const servedOrder = orders.find((order) => order.orderId === orderId);
+    const servedOrder = orders.find((order) => order.orderNumber === orderId);
     if (servedOrder) {
       setServedOrders((prevServed) => {
         const updatedServed = [servedOrder, ...prevServed];
@@ -35,17 +80,17 @@ function StaffPage() {
         return updatedServed;
       });
       setOrders((prevOrders) =>
-        prevOrders.filter((order) => order.orderId !== orderId),
+        prevOrders.filter((order) => order.orderNumber !== orderId),
       );
     }
   };
 
   const resetOrder = (order) => {
-    if (servedOrders.find((o) => o.orderId === order.orderId)) {
+    if (servedOrders.find((o) => o.orderNumber === order.orderId)) {
       // Order is in servedOrders
       // Remove from servedOrders
       setServedOrders((prevServed) =>
-        prevServed.filter((o) => o.orderId !== order.orderId),
+        prevServed.filter((o) => o.orderNumber !== order.orderId),
       );
       // Add back to orders with status 'Waiting'
       setOrders((prevOrders) => [
@@ -99,13 +144,13 @@ function StaffPage() {
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
             {orders.map((order) => (
               <div
-                key={order.orderId}
+                key={order.orderNumber}
                 className={`border-4 rounded-lg p-4 shadow ${
                   resetMode ? "border-red-500" : getStatusStyles(order.status)
                 }`}
               >
                 <h2 className="text-2xl font-bold mb-2">
-                  Order #{order.orderId}
+                  Order #{order.orderNumber}
                 </h2>
                 <p
                   className={`text-lg font-semibold mb-2 ${
@@ -119,7 +164,7 @@ function StaffPage() {
                 <ul className="space-y-1 mb-4">
                   {order.items.map((item, index) => (
                     <li key={index} className="text-lg">
-                      {item}
+                      {item.name}
                     </li>
                   ))}
                 </ul>
@@ -143,13 +188,13 @@ function StaffPage() {
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
               {servedOrders.map((order) => (
                 <div
-                  key={order.orderId}
+                  key={order.orderNumber}
                   className={`border-4 rounded-lg p-4 shadow ${
                     resetMode ? "border-red-500" : "border-gray-500 bg-gray-200"
                   }`}
                 >
                   <h2 className="text-2xl font-bold mb-2">
-                    Order #{order.orderId}
+                    Order #{order.orderNumber}
                   </h2>
                   <p className="text-lg font-semibold mb-2 text-gray-600">
                     Status: Served
@@ -157,7 +202,7 @@ function StaffPage() {
                   <ul className="space-y-1 mb-4">
                     {order.items.map((item, index) => (
                       <li key={index} className="text-lg">
-                        {item}
+                        {item.name}
                       </li>
                     ))}
                   </ul>

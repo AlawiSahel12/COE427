@@ -150,16 +150,21 @@ wss.on('connection', (ws) => {
 
         }
         else if(message.action == Actions.UPDATE_ORDER_STATE){
-            let order = Orders.find(o => o.id == message.data)
+
+            console.log(message.data)
+
+            let order = Orders.find(o => o.orderNumber == message.data)
 
             if(order){
+                console.log("hi")
                 order.status = OrderStatus.SERVED
+                let broadcastMessage = {
+                    action:Actions.ORDER_LIST_UPDATE,
+                    data: Orders
+                }
+                broadcast(broadcastMessage)
             }
-            let broadcastMessage = {
-                action:Actions.ORDER_LIST_UPDATE,
-                data: Orders
-            }
-            broadcast(broadcastMessage)
+
         }
     });
 

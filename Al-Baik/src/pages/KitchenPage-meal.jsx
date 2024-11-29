@@ -1,24 +1,87 @@
 // src/pages/MealsPage.jsx
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
+import { Actions } from "../enum/orderStatus";
+
+let Meals = [
+  {
+      name: "Chicken Meal",
+      required: 0,
+      prepared: 0
+  },
+  {
+      name: "Spicy Chicken Meal".replace(/\t/g, ''),
+      required: 0,
+      prepared: 0
+  },
+  {
+      name: "Fish Meal",
+      required: 0,
+      prepared: 0
+  },
+  {
+      name: "Spicy Fish Meal".replace(/\t/g, ''),
+      required: 0,
+      prepared: 0
+  },
+  {
+      name: "Fries",
+      required: 0,
+      prepared: 0
+  }
+];
+
+
+
 
 function MealsPage() {
-  const [meals, setMeals] = useState([
-    { name: "Chicken Meal", spicy: true, required: 0, prepared: 0 },
-    { name: "Chicken Meal", spicy: false, required: 0, prepared: 0 },
-    { name: "Fish Meal", spicy: true, required: 0, prepared: 0 },
-    { name: "Fish Meal", spicy: false, required: 0, prepared: 0 },
-    { name: "Fries", spicy: false, required: 0, prepared: 0 },
-    { name: "Shrimp Meal", spicy: false, required: 0, prepared: 0 },
-  ]);
+  const [meals, setMeals] = useState(Meals);
+
+  const [ws, setWs] = useState(null); // WebSocket state
+
+
+  useEffect(() => {
+    const socket = new WebSocket("ws://localhost:3000");
+
+    socket.onopen = () => {
+      console.log("Connected to WebSocket server");
+    };
+
+
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+
+      if (message.action === Actions.UPDATE_MEALS) {
+        setMeals(message.data)
+
+      } 
+    };
+
+    socket.onclose = () => {
+      console.log("Disconnected from WebSocket server");
+    };
+
+    setWs(socket); // Save the WebSocket object
+
+    return () => {
+      // Cleanup WebSocket connection when component unmounts
+      socket.close();
+    };
+  }, [])
+
+
 
   const toggleItemPrepared = (itemName) => {
-    setMeals((prevMeals) =>
-      prevMeals.map((meal) =>
-        meal.name === itemName
-          ? { ...meal, prepared: meal.prepared + 1 }
-          : meal,
-      ),
-    );
+
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      const message = {
+        action: Actions.ADD_PREPARED_MEAL,
+        data: itemName,
+      };
+
+      // Send the message to the server
+      ws.send(JSON.stringify(message));
+      console.log("Order submitted:", message);
+    }
   };
 
   return (
@@ -32,7 +95,6 @@ function MealsPage() {
           <thead>
             <tr>
               <th className="border border-gray-300 p-2">Item Name</th>
-              <th className="border border-gray-300 p-2">Type</th>
               <th className="border border-gray-300 p-2">Required</th>
               <th className="border border-gray-300 p-2">Prepared</th>
               <th className="border border-gray-300 p-2">Action</th>
@@ -42,9 +104,6 @@ function MealsPage() {
             {meals.map((meal) => (
               <tr key={meal.name}>
                 <td className="border border-gray-300 p-2">{meal.name}</td>
-                <td className="border border-gray-300 p-2">
-                  {meal.spicy ? "Spicy" : "Normal"}
-                </td>
                 <td className="border border-gray-300 p-2">{meal.required}</td>
                 <td className="border border-gray-300 p-2">{meal.prepared}</td>
                 <td className="border border-gray-300 p-2">

@@ -39,7 +39,7 @@ function OrderPage() {
 
   // Establish WebSocket connection
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:3000"); // Assuming your WebSocket server is running on localhost:3000
+    const socket = new WebSocket("ws://localhost:3000");
 
     socket.onopen = () => {
       console.log("Connected to WebSocket server");

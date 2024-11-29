@@ -1,33 +1,48 @@
 // src/pages/QueuePage.jsx
 import React, { useEffect, useState } from "react";
+import { Actions } from "../enum/orderStatus";
 
 function QueuePage() {
   const [orders, setOrders] = useState([
-    { orderId: 101, status: "Waiting" },
-    { orderId: 102, status: "Waiting" },
-    { orderId: 103, status: "Ready" },
     // ...more orders
   ]);
 
+
+  const [ws, setWs] = useState(null); // WebSocket state
+
+
   // Simulate real-time updates (for demonstration purposes)
   useEffect(() => {
-    const interval = setInterval(() => {
-      setOrders((prevOrders) =>
-        prevOrders.map((order) => {
-          if (order.status === "Waiting") {
-            return { ...order, status: "Ready" };
-          } else {
-            return order;
-          }
-        }),
-      );
-    }, 10000); // Update every 10 seconds
+    const socket = new WebSocket("ws://localhost:3000");
 
-    return () => clearInterval(interval);
-  }, []);
+    socket.onopen = () => {
+      console.log("Connected to WebSocket server");
+    };
+
+
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+
+      if (message.action === Actions.ORDER_LIST_UPDATE) {
+        setOrders(message.data)
+
+      } 
+    };
+
+    socket.onclose = () => {
+      console.log("Disconnected from WebSocket server");
+    };
+
+    setWs(socket); // Save the WebSocket object
+
+    return () => {
+      // Cleanup WebSocket connection when component unmounts
+      socket.close();
+    };
+  }, [])
 
   const waitingOrders = orders.filter((order) => order.status === "Waiting");
-  const readyOrders = orders.filter((order) => order.status === "Ready");
+  const readyOrders = orders.filter((order) => order.status === "Served");
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
@@ -47,10 +62,10 @@ function QueuePage() {
               ) : (
                 waitingOrders.map((order) => (
                   <div
-                    key={order.orderId}
+                    key={order.orderNumber}
                     className="bg-gray-200 rounded-lg py-4 text-center text-2xl font-bold"
                   >
-                    Order #{order.orderId}
+                    Order #{order.orderNumber}
                   </div>
                 ))
               )}
@@ -68,10 +83,10 @@ function QueuePage() {
               ) : (
                 readyOrders.map((order) => (
                   <div
-                    key={order.orderId}
+                    key={order.orderNumber}
                     className="bg-green-200 rounded-lg py-4 text-center text-2xl font-bold"
                   >
-                    Order #{order.orderId}
+                    Order #{order.orderNumber}
                   </div>
                 ))
               )}
