@@ -43,6 +43,25 @@ wss.on('connection', (ws) => {
     
     ws.send('Hello, WebSocket client!');
 
+    ws.send(JSON.stringify(
+        {
+            action:Actions.ORDER_LIST_UPDATE,
+            data: Orders
+        }
+    ))
+    ws.send(JSON.stringify(
+        {
+            action:Actions.UPDATE_MEALS,
+            data: Meals
+        }
+    ))
+    ws.send(JSON.stringify(
+        {
+            action:Actions.UPDATE_SANDWICH,
+            data: Sandwiches
+        }
+    ))
+
 
     ws.on('message', (data) => {
 
