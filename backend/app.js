@@ -6,6 +6,9 @@ const server = http.createServer(app);
 const { Orders, Meals, Sandwiches } = require('./models/models');
 const { send } = require('process');
 const { error } = require('console');
+
+const os = require('os');
+
 const wss = new WebSocket.Server({ server });
 
 let OrderNumber = 0
@@ -199,9 +202,22 @@ app.get('/', (req, res) => {
     res.send('WebSocket server is running!');
 });
 
+
+
+const interfaces = os.networkInterfaces();
+let localIP = '';
+
+for (let iface in interfaces) {
+  interfaces[iface].forEach((address) => {
+    if (address.family === 'IPv4' && !address.internal) {
+      localIP = address.address;
+    }
+  });
+}
+
 const port = 3000;
-server.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+server.listen(port,localIP, () => {
+    console.log(`Server is running at http://${localIP}:${port}`);
 });
 
 
