@@ -38,7 +38,7 @@ function SandwichesPage() {
 
 
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:3000");
+    const socket = new WebSocket(import.meta.env.VITE_REACT_APP_SOCKET_URL);
 
     socket.onopen = () => {
       console.log("Connected to WebSocket server");
