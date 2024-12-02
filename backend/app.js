@@ -261,42 +261,46 @@ wss.on('connection', (ws) => {
 });
 
 
-const websocketClient = new WebSocket('ws://');
+let websocketClient;
 
-websocketClient.on('open', () => {
+const connectWebSocket = () => {
+  // Create a new WebSocket client
+  websocketClient = new WebSocket('ws://10.83.203.9:3000');
+
+  websocketClient.on('open', () => {
     console.log('Connected to the remote WebSocket server.');
-  
+
     // Send a message to the remote WebSocket server
     websocketClient.send('Hello from Express WebSocket client!');
   });
 
-
   websocketClient.on('message', (data) => {
-
     const message = JSON.parse(data);
 
-    if(message.action == Actions.UPDATE_MEALS){
-        Meals = message.data
-
-    }else if(message.action == Actions.UPDATE_SANDWICH){
-        Sandwiches = message.data
-
-    }else if(message.action == Actions.ORDER_LIST_UPDATE){
-
-        if(message.data != null){
-
-            OrderNumber = message.data.pop().orderNumber
-        }
-
-        Orders = message.data
-
-
+    if (message.action === Actions.UPDATE_MEALS) {
+      Meals = message.data;
+    } else if (message.action === Actions.UPDATE_SANDWICH) {
+      Sandwiches = message.data;
+    } else if (message.action === Actions.ORDER_LIST_UPDATE) {
+      if (message.data != null) {
+        OrderNumber = message.data.pop().orderNumber;
+      }
+      Orders = message.data;
     }
-
-    
-    
-    
   });
+
+  websocketClient.on('close', () => {
+    setTimeout(connectWebSocket, 3000); // Retry connection after 3 seconds
+  });
+
+  websocketClient.on('error', (error) => {
+    setTimeout(connectWebSocket, 3000); // Retry connection after 3 seconds
+  });
+};
+
+// Initial connection attempt
+connectWebSocket();
+
 
 app.get('/', (req, res) => {
     res.send('WebSocket server is running!');
