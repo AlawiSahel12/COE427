@@ -272,6 +272,10 @@ server.listen(port,localIP, () => {
 });
 
 
+app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+  });
+
 function broadcast(message) {
     clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
