@@ -39,45 +39,77 @@ let clients = []
 
 
 
-function saveState() {
-    const state = {
-        Orders: Orders,
-        Meals: Meals,
-        Sandwiches: Sandwiches
-    };
+// function saveState() {
+//     const state = {
+//         Orders: Orders,
+//         Meals: Meals,
+//         Sandwiches: Sandwiches
+//     };
     
-    fs.writeFileSync('state.json', JSON.stringify(state), 'utf-8');
-    console.log('State saved!');
-}
+//     fs.writeFileSync('state.json', JSON.stringify(state), 'utf-8');
+//     console.log('State saved!');
+// }
 
-function loadState() {
-    if (fs.existsSync('state.json')) {
-        const data = fs.readFileSync('state.json', 'utf-8');
-        const state = JSON.parse(data);
+// function loadState() {
+//     if (fs.existsSync('state.json')) {
+//         const data = fs.readFileSync('state.json', 'utf-8');
+//         const state = JSON.parse(data);
 
-        Orders = state.Orders || [];
-        Meals = state.Meals || [];
-        Sandwiches = state.Sandwiches || [];
-        console.log('State loaded from file!');
-    } else {
-        console.log('No previous state found, starting with empty data.');
+//         Orders = state.Orders || [];
+//         Meals = state.Meals || [];
+//         Sandwiches = state.Sandwiches || [];
+//         console.log('State loaded from file!');
+//     } else {
+//         console.log('No previous state found, starting with empty data.');
+//     }
+// }
+
+// loadState();
+
+
+const websocketClient = new WebSocket('ws://');
+
+websocketClient.on('open', () => {
+    console.log('Connected to the remote WebSocket server.');
+  
+    // Send a message to the remote WebSocket server
+    websocketClient.send('Hello from Express WebSocket client!');
+  });
+
+
+  websocketClient.on('message', (data) => {
+
+    const message = JSON.parse(data);
+
+    if(message.action == Actions.UPDATE_MEALS){
+        Meals = message.data
+
+    }else if(message.action == Actions.UPDATE_SANDWICH){
+        Sandwiches = message.data
+
+    }else if(message.action == Actions.ORDER_LIST_UPDATE){
+
+        if(message.data != null){
+
+            OrderNumber = message.data.pop().orderNumber
+        }
+
+        Orders = message.data
+
+
     }
-}
 
-loadState();
-
-
-
-
-wss.on('connection', (ws) => {
-
-    // here we are adding clients to clint list
-    clients.push(ws);
-
-    console.log('Client connected');
     
-    ws.send('Hello, WebSocket client!');
+    
+    
+  });
 
+
+
+
+function broadcastAll(ws){
+
+    
     ws.send(JSON.stringify(
         {
             action:Actions.ORDER_LIST_UPDATE,
@@ -96,6 +128,20 @@ wss.on('connection', (ws) => {
             data: Sandwiches
         }
     ))
+
+}
+
+
+wss.on('connection', (ws) => {
+
+    // here we are adding clients to clint list
+    clients.push(ws);
+
+    console.log('Client connected');
+    
+    ws.send('Hello, WebSocket client!');
+
+    broadcastAll(ws)
 
 
     ws.on('message', (data) => {
