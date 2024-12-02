@@ -3,7 +3,9 @@ const WebSocket = require('ws');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
-const { Orders, Meals, Sandwiches } = require('./models/models');
+let { Orders, Meals, Sandwiches } = require('./models/models');
+const fs = require('fs');
+
 const { send } = require('process');
 const { error } = require('console');
 
@@ -34,6 +36,36 @@ const Actions =  Object.freeze({
   
 
 let clients = []
+
+
+
+function saveState() {
+    const state = {
+        Orders: Orders,
+        Meals: Meals,
+        Sandwiches: Sandwiches
+    };
+    
+    fs.writeFileSync('state.json', JSON.stringify(state), 'utf-8');
+    console.log('State saved!');
+}
+
+function loadState() {
+    if (fs.existsSync('state.json')) {
+        const data = fs.readFileSync('state.json', 'utf-8');
+        const state = JSON.parse(data);
+
+        Orders = state.Orders || [];
+        Meals = state.Meals || [];
+        Sandwiches = state.Sandwiches || [];
+        console.log('State loaded from file!');
+    } else {
+        console.log('No previous state found, starting with empty data.');
+    }
+}
+
+loadState();
+
 
 
 
@@ -134,6 +166,8 @@ wss.on('connection', (ws) => {
             broadcast(broadcastMeal)
 
             broadcast(broadcastSandwich)
+
+            saveState()
         
 
             }catch (error)  {
@@ -154,6 +188,7 @@ wss.on('connection', (ws) => {
                     data:Meals
                 })
             }
+            saveState()
 
 
         }
@@ -167,6 +202,8 @@ wss.on('connection', (ws) => {
                     action:Actions.UPDATE_SANDWICH,
                     data:Sandwiches
                 })
+
+                saveState()
             }
 
 
@@ -178,13 +215,27 @@ wss.on('connection', (ws) => {
             let order = Orders.find(o => o.orderNumber == message.data)
 
             if(order){
-                console.log("hi")
                 order.status = OrderStatus.SERVED
                 let broadcastMessage = {
                     action:Actions.ORDER_LIST_UPDATE,
                     data: Orders
                 }
                 broadcast(broadcastMessage)
+
+                setTimeout(() => {
+                    // Remove the served order after 20 seconds
+                    Orders = Orders.filter(o => o.orderNumber !== order.orderNumber);
+        
+                    // Broadcast the updated list of orders (with the served order removed)
+                    broadcast({
+                        action: Actions.ORDER_LIST_UPDATE,
+                        data: Orders
+                    });
+
+                    saveState()
+        
+                    console.log(`Order ${order.orderNumber} removed after 20 seconds`);
+                }, 20000);
             }
 
         }
